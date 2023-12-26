@@ -18,28 +18,44 @@ const fetchDeckCard = async () => {
   }
 };
 
+let numOfPlayers;
+const onChangeHandler = (e) => {
+  numOfPlayers = e.target.value;
+  return numOfPlayers;
+};
+
 const drawCards = async () => {
   try {
     let deck_id = await fetchDeckCard();
     const res = await fetch(
-      `https://www.deckofcardsapi.com/api/deck/${deck_id}/draw/?count=6`
+      `https://www.deckofcardsapi.com/api/deck/${deck_id}/draw/?count=52`
     );
     const data = await res.json();
+
     let cards = data.cards;
-    const cardsImg = cards.forEach((el) => {
+    const cardsImg = cards.forEach((el, index) => {
       const img = document.createElement("img");
       img.src = el.image;
-      img.style.width = "40px";
+      img.style.width = "100px";
+
       const player1 = document.querySelector(".player1");
       const player2 = document.querySelector(".player2");
 
-      // player1.append(img);
-      // player2.append(img);
+      if (index === 0 || index % 2 === 0) {
+        player1.append(img);
+      } else {
+        player2.append(img);
+      }
     });
+
+    const drawBtn = document.querySelector("#drawBtn");
+    drawBtn.remove();
 
     console.log(data);
     return data;
   } catch (err) {
-    console.log(err);
+    console.log("Error drawing cards", err);
   }
 };
+
+drawCards();

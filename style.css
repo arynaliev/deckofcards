@@ -4,29 +4,35 @@
   box-sizing: border-box;
 }
 
+body {
+  background-image: url("https://img.freepik.com/free-vector/gradient-zoom-effect-background_23-2149717745.jpg?w=1800&t=st=1703545249~exp=1703545849~hmac=90f2cda448f4bb8f0f39a0ff3111f43f02b172ebd445ebb765ba195941cffa70");
+  background-size: cover;
+  color: white;
+}
+
 .container {
   width: 100%;
   height: 100vh;
-  display: grid;
-  /* grid-template-rows: 1fr, 1fr, 1fr; */
-  grid-template-columns: 30% 30%;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
 }
 
-#numOfPlayers,
-#drawBtn {
-  margin: 5px;
-  padding: 0.5rem 1rem;
-  border: 1px solid black;
+section {
+  display: flex;
+  justify-content: space-between;
 }
 
 .player1,
 .player2 {
-  border: 1px solid black;
-  width: 100%;
-  height: 300px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  gap: 5px;
+  border: 1px solid white;
+  width: 30%;
+  height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gameTable {
+  width: 40%;
+  height: 400px;
 }
