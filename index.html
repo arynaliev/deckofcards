@@ -4,19 +4,31 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="style.css">
-   <title>Deck Of Cards</title>
+   <title>getKurica</title>
 </head>
 <body>
    <div class="container">
       <nav>
-         <h1>Card Game for 2 Players</h1>
+         <h1>Kurica Game for 2 Players</h1>
       </nav>
       <section>
-         <div class="player1"></div>
+         <div class="player1">
+            <h1>Player 1</h1>
+            <div>
+               <p>use 'w' to place card</p>
+               <p>use 'q' to put your hand</p>
+            </div>
+         </div>
          <div class="gameTable">
             <h3>Total cards:</h3><span id="totalCards">0</span>
          </div>
-         <div class="player2"></div>
+         <div class="player2">
+            <h1>Player 2</h1>
+            <div>
+               <p>use 'o' to place card</p>
+               <p>use 'p' to put your hand</p>
+            </div>
+         </div>
          <button id="drawBtn" type="button" onclick="drawCards()">Draw</button>
       </section>
    </div>
