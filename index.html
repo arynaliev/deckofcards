@@ -10,27 +10,36 @@
    <div class="container">
       <nav>
          <h1>Kurica Game for 2 Players</h1>
+         <span>🔊</span>
       </nav>
       <section>
          <div class="player1">
-            <h1>Player 1</h1>
             <div>
-               <p>use 'w' to place card</p>
-               <p>use 'q' to put your hand</p>
+               <img class="playersImg" src="https://cdn3.iconfinder.com/data/icons/casino-64/2038/card_game_sport_man_poker_man_player-512.png" alt="Player1" width="100px">
+               <h1>Player 1</h1>
+            </div>
+            <div class="instruction">
+               <h4>use 'w' to place card</h4>
+               <h4>use 'q' to put your hand</h4>
             </div>
          </div>
          <div class="gameTable">
             <h3>Total cards:</h3><span id="totalCards">0</span>
          </div>
          <div class="player2">
-            <h1>Player 2</h1>
             <div>
-               <p>use 'o' to place card</p>
-               <p>use 'p' to put your hand</p>
+               <img class="playersImg" src="https://cdn3.iconfinder.com/data/icons/casino-64/2038/card_game_sport_man_poker_man_player-512.png" alt="Player2" width="100px">
+               <h1>Player 2</h1>
+            </div>
+            <div class="instruction">
+               <h4>use 'o' to place card</h4>
+               <h4>use 'p' to put your hand</h4>
             </div>
          </div>
-         <button id="drawBtn" type="button" onclick="drawCards()">Draw</button>
       </section>
+      <div class="btnBox">
+         <button id="startBtn" type="button" onclick="drawCards()">Start!</button>
+      </div>
    </div>
 
 
