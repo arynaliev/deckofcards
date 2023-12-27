@@ -2,18 +2,14 @@
 
 // main global variables
 let numOfPlayer = 2;
-// let player1Cards = [];
-// let player2Cards = [];
 const playersCards = {};
+let allCards = 0;
 let cardsOnTable = [];
 let prevCard = {};
 let lastCard = {};
 let handsOnTable = [];
 let currentPlayer = "Player 1";
-
-// back of card
-const backOfCard =
-  "https://images.squarespace-cdn.com/content/v1/5abd8db4620b85fa99f15131/1542340370129-WV43BVUJLUTWL6FRRK52/Card+Back+2.0+-+Poker+Size+-+Red_shw.png";
+let placedHands = [];
 
 // fetching deck of card
 const fetchDeckCard = async () => {
@@ -22,6 +18,7 @@ const fetchDeckCard = async () => {
       "https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
     );
     const data = await res.json();
+    console.log(data.deck_id);
     return data.deck_id;
   } catch (err) {
     console.log("Error on fetching the data:", err);
@@ -36,62 +33,75 @@ const drawCards = async () => {
       `https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=30`
     );
     const data = await res.json();
-    return data.cards;
+
+    const startBtn = document.querySelector("#startBtn");
+    startBtn.remove();
+
+    allCards = data.cards;
+    console.log("www", allCards);
+    spreadCards();
+    return allCards;
   } catch (err) {
     console.log("Error on drawing cards:", err);
   }
 };
 
-// let cards = data.cards;
-// const cardsImg = cards.forEach((el, index) => {
-//   const img = document.createElement("img");
-//   img.src = backOfCard;
-//   img.style.width = "100px";
+const spreadCards = () => {
+  const cardDealer = Math.floor(allCards.length / numOfPlayer);
+  console.log("22", allCards);
+  for (let i = 1; i <= numOfPlayer; i++) {
+    console.log("count:", cardDealer);
+    const playerCards = allCards.splice(0, cardDealer);
+    playersCards[`Player ${i}`] = playerCards;
+    console.log(playerCards);
 
-//   const player1 = document.querySelector(".player1");
-//   const player2 = document.querySelector(".player2");
+    let cards = playersCards[`Player ${i}`];
+    console.log("cards", cards);
+    cards.forEach(() => {
+      const backOfCard = document.createElement("img");
+      backOfCard.src = "https://www.deckofcardsapi.com/static/img/back.png";
+      backOfCard.style.width = "100px";
+      backOfCard.className = `player${i}Cards`;
 
-//   if (index === 0 || index % 2 === 0) {
-//     player1.append(img);
-//     img.className = "player1Cards";
-//   } else {
-//     player2.append(img);
-//     img.className = "player2Cards";
-//   }
-// });
-
-const spreadCards = (cardsList) => {
-  const playerCardCount = Math.floor(cardsList.length / numOfPlayer);
-  for (let i = 0; i <= numOfPlayer; i++) {
-    console.log(playerCardCount);
-    const playerCards = cardsList.splice(0, playerCardCount);
-    playersCards[`player-${i}`] = playerCards;
+      const playerDiv = document.querySelector(`.player${i}`);
+      playerDiv.append(backOfCard);
+    });
   }
-  console.log("playerCards", playersCards);
+  console.log("playersCards", playersCards);
+  return playersCards;
 };
 
+// placing cards on the table
 const placeCard = (player) => {
   if (player !== currentPlayer) {
-    return;
-  } else if (placedHands.length !== numOfPlayer) {
-    alert("Everybody should put hands");
+    currentPlayer = player;
+    return currentPlayer;
   }
-
-  const playerCard = playersCards[player].pop();
-  cardsOnTable.push(playerCard);
-
-  if (currentCard.code) {
-    prevCard = currentCard;
-    currentCard = playerCard;
+  //   else if (placedHands.length !== numOfPlayer) {
+  //     alert("Everybody should put hands");
+  //   }
+  const currentPlayerCard = playersCards[currentPlayer].pop();
+  cardsOnTable.push(currentPlayerCard);
+  if (lastCard.code) {
+    prevCard = lastCard;
+    lastCard = currentPlayerCard;
   } else {
-    currentCard = playerCard;
+    lastCard = currentPlayerCard;
   }
-
   currentPlayer = player === "Player 1" ? "Player 2" : "Player 1";
-
   console.log("cards on table", cardsOnTable);
-  console.log("current card", currentCard);
   console.log("previous card", prevCard);
+  console.log("last card", lastCard);
+};
+
+const paintCardsOnTable = () => {
+  cardsOnTable.forEach((el) => {
+    const frontOfCard = document.createElement("img");
+    frontOfCard.src = el.image;
+
+    const gameTable = document.querySelector(".gameTable");
+    gameTable.append = frontOfCard;
+  });
 };
 
 const decideLoser = () => {
@@ -113,7 +123,7 @@ const placeHand = (player) => {
   }
 
   placedHands.push(player);
-  if (prevCard.suit !== currentCard.suit) {
+  if (prevCard.suit !== lastCard.suit) {
     let loser = placedHands[0];
     playersCards[loser] = [...cardsOnTable, ...playersCards[loser]];
     cardsOnTable = [];
@@ -122,7 +132,7 @@ const placeHand = (player) => {
     return;
   }
 
-  if (Object.keys(playersCards).length === placedHands.length) {
+  if (numOfPlayer === placedHands.length) {
     const loser = decideLoser();
     playersCards[loser] = [...cardsOnTable, ...playersCards[loser]];
     cardsOnTable = [];
@@ -148,7 +158,15 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-const restartGame = async () => {
-  const allCards = await drawCards();
-  spreadCards(allCards);
-};
+// restart the game
+// const restartGame = async () => {
+//   const allCards = await fetchDeckCard();
+//   drawCards(allCards);
+// };
+
+// fetchDeckCard();
+// drawCards();
+// placeCard();
+// placeHand();
+// decideLoser();
+// restartGame();
