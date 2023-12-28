@@ -35,7 +35,7 @@ const drawCards = async () => {
     const data = await res.json();
 
     const startBtn = document.querySelector("#startBtn");
-    startBtn.remove();
+    startBtn.textContent = "Restart";
 
     allCards = data.cards;
     console.log("www", allCards);
@@ -80,27 +80,52 @@ const placeCard = (player) => {
   //   else if (placedHands.length !== numOfPlayer) {
   //     alert("Everybody should put hands");
   //   }
-  const currentPlayerCard = playersCards[currentPlayer].pop();
+  const currentPlayerCards = playersCards[currentPlayer];
+  if (currentPlayerCards.length === 0) {
+    console.log("Player has no more cards to place.");
+    return;
+  }
+  const currentPlayerCard = currentPlayerCards.pop();
   cardsOnTable.push(currentPlayerCard);
+
   if (lastCard.code) {
     prevCard = lastCard;
-    lastCard = currentPlayerCard;
-  } else {
-    lastCard = currentPlayerCard;
   }
+  lastCard = currentPlayerCard;
+
   currentPlayer = player === "Player 1" ? "Player 2" : "Player 1";
-  console.log("cards on table", cardsOnTable);
-  console.log("previous card", prevCard);
-  console.log("last card", lastCard);
+  console.log("Player", currentPlayer, "turn to place a card.");
+  console.log("Cards on table:", cardsOnTable);
+  console.log("Previous card:", prevCard);
+  console.log("Last card:", lastCard);
 };
 
 const paintCardsOnTable = () => {
+  const gameTable = document.querySelector(".gameTable");
+
   cardsOnTable.forEach((el) => {
+    const cardContainer = document.createElement("div");
+    cardContainer.className = "card-container";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.daraset.code = el.code;
+
     const frontOfCard = document.createElement("img");
     frontOfCard.src = el.image;
 
-    const gameTable = document.querySelector(".gameTable");
-    gameTable.append = frontOfCard;
+    const backOfCard = document.createElement("img");
+    backOfCard.src = "https://www.deckofcardsapi.com/static/img/back.png";
+
+    card.append(frontOfCard);
+    card.append(backOfCard);
+    cardContainer.append(card);
+    gameTable.append(cardContainer);
+
+    //  click event to each card
+    card.addEventListener("click", () => {
+      card.classList.toggle("flipped");
+    });
   });
 };
 
@@ -126,6 +151,7 @@ const placeHand = (player) => {
   if (prevCard.suit !== lastCard.suit) {
     let loser = placedHands[0];
     playersCards[loser] = [...cardsOnTable, ...playersCards[loser]];
+    prevCard = {};
     cardsOnTable = [];
     placedHands = [];
     console.log("player card on mismatch", playersCards);
@@ -135,6 +161,7 @@ const placeHand = (player) => {
   if (numOfPlayer === placedHands.length) {
     const loser = decideLoser();
     playersCards[loser] = [...cardsOnTable, ...playersCards[loser]];
+    prevCard = {};
     cardsOnTable = [];
     placedHands = [];
     console.log("player card on match", playersCards);
@@ -159,14 +186,17 @@ window.addEventListener("keydown", (e) => {
 });
 
 // restart the game
-// const restartGame = async () => {
-//   const allCards = await fetchDeckCard();
-//   drawCards(allCards);
-// };
+const restartGame = async () => {
+  if (startBtn.textContent === "Restart") {
+    const allCards = await fetchDeckCard();
+    drawCards(allCards);
+  }
+};
 
 // fetchDeckCard();
 // drawCards();
 // placeCard();
+// paintCardsOnTable();
 // placeHand();
 // decideLoser();
 // restartGame();
