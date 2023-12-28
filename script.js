@@ -131,12 +131,14 @@ const paintCardsOnTable = () => {
 
 const decideLoser = () => {
   let loser;
-  if (placedHands.length > 1) {
-    loser = placedHands[placedHands.length - 1];
-    return loser;
-  } else {
-    alert("All players must put their hands");
-  }
+  setTimeout(() => {
+    if (placedHands.length > 1) {
+      loser = placedHands[placedHands.length - 1];
+      return loser;
+    } else {
+      alert("All players must put their hands");
+    }
+  }, 1000);
 };
 
 const placeHand = (player) => {
@@ -182,6 +184,21 @@ window.addEventListener("keydown", (e) => {
   } else if (e.key === "o") {
     //player 2 puts hand
     placeHand("Player 2");
+  }
+});
+
+const volumeIcon = document.querySelector("#volumeIcon");
+let isMuted = false;
+let audio = new Audio("mixkit-christmas-jazz-503.mp3");
+volumeIcon.addEventListener("click", () => {
+  if (!isMuted) {
+    audio.pause();
+    isMuted = true;
+    volumeIcon.textContent = "🔇";
+  } else {
+    audio.play();
+    isMuted = false;
+    volumeIcon.textContent = "🔊";
   }
 });
 
