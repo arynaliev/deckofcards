@@ -38,7 +38,6 @@ const drawCards = async () => {
     startBtn.textContent = "Restart";
 
     allCards = data.cards;
-    console.log("www", allCards);
     spreadCards();
     return allCards;
   } catch (err) {
@@ -77,13 +76,10 @@ const placeCard = (player) => {
     currentPlayer = player;
     return currentPlayer;
   }
-  //   else if (placedHands.length !== numOfPlayer) {
-  //     alert("Everybody should put hands");
-  //   }
+
   const currentPlayerCards = playersCards[currentPlayer];
   if (currentPlayerCards.length === 0) {
     console.log("Player has no more cards to place.");
-    return;
   }
   const currentPlayerCard = currentPlayerCards.pop();
   cardsOnTable.push(currentPlayerCard);
@@ -93,15 +89,18 @@ const placeCard = (player) => {
   }
   lastCard = currentPlayerCard;
 
+  paintCardsOnTable();
   currentPlayer = player === "Player 1" ? "Player 2" : "Player 1";
   console.log("Player", currentPlayer, "turn to place a card.");
   console.log("Cards on table:", cardsOnTable);
   console.log("Previous card:", prevCard);
   console.log("Last card:", lastCard);
 };
+// placeCard();
 
 const paintCardsOnTable = () => {
   const gameTable = document.querySelector(".gameTable");
+  gameTable.innerHTML = "";
 
   cardsOnTable.forEach((el) => {
     const cardContainer = document.createElement("div");
@@ -109,36 +108,34 @@ const paintCardsOnTable = () => {
 
     const card = document.createElement("div");
     card.className = "card";
-    card.daraset.code = el.code;
+    card.dataset.code = el.code;
 
     const frontOfCard = document.createElement("img");
     frontOfCard.src = el.image;
 
-    const backOfCard = document.createElement("img");
-    backOfCard.src = "https://www.deckofcardsapi.com/static/img/back.png";
+    //  const backOfCard = document.createElement("img");
+    //  backOfCard.src = "https://www.deckofcardsapi.com/static/img/back.png";
 
+    //  card.append(backOfCard);
     card.append(frontOfCard);
-    card.append(backOfCard);
     cardContainer.append(card);
     gameTable.append(cardContainer);
 
     //  click event to each card
-    card.addEventListener("click", () => {
-      card.classList.toggle("flipped");
-    });
+    //  card.addEventListener("click", () => {
+    //    card.classList.toggle("flipped");
+    //  });
   });
 };
 
 const decideLoser = () => {
   let loser;
-  setTimeout(() => {
-    if (placedHands.length > 1) {
-      loser = placedHands[placedHands.length - 1];
-      return loser;
-    } else {
-      alert("All players must put their hands");
-    }
-  }, 1000);
+  if (placedHands.length > 1) {
+    loser = placedHands[placedHands.length - 1];
+    return loser;
+  } else {
+    alert("All players must put their hands");
+  }
 };
 
 const placeHand = (player) => {
@@ -163,11 +160,18 @@ const placeHand = (player) => {
   if (numOfPlayer === placedHands.length) {
     const loser = decideLoser();
     playersCards[loser] = [...cardsOnTable, ...playersCards[loser]];
-    prevCard = {};
     cardsOnTable = [];
     placedHands = [];
+    prevCard = {};
     console.log("player card on match", playersCards);
   }
+};
+
+const restartGame = async () => {
+  //   if (startBtn.textContent === "Restart") {
+  const allCards = await fetchDeckCard();
+  drawCards(allCards);
+  //   }
 };
 
 // keyboard event listeners
@@ -185,6 +189,16 @@ window.addEventListener("keydown", (e) => {
     //player 2 puts hand
     placeHand("Player 2");
   }
+
+  //   return key
+  //   if (e.key === "return") {
+  //     // start and restart
+  //     if (!playersCards) {
+  //       drawCards();
+  //     } else {
+  //       restartGame();
+  //     }
+  //   }
 });
 
 const volumeIcon = document.querySelector("#volumeIcon");
@@ -194,21 +208,15 @@ volumeIcon.addEventListener("click", () => {
   if (!isMuted) {
     audio.pause();
     isMuted = true;
-    volumeIcon.textContent = "🔇";
+    volumeIcon.textContent = "🔇 Turn music on";
   } else {
     audio.play();
     isMuted = false;
-    volumeIcon.textContent = "🔊";
+    volumeIcon.textContent = "🔊 Turn music off";
   }
 });
 
 // restart the game
-const restartGame = async () => {
-  if (startBtn.textContent === "Restart") {
-    const allCards = await fetchDeckCard();
-    drawCards(allCards);
-  }
-};
 
 // fetchDeckCard();
 // drawCards();
